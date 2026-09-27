@@ -1,6 +1,5 @@
-# OfflineOrbit_V28
 
-> **Offline-first, bilingual digital learning for Class 4 classrooms**
+**OFFLINE ORBIT**
 
 OfflineOrbit is a **Progressive Web App (PWA)** designed for primary-school classrooms where internet access is unreliable or unavailable. It provides an interactive learning experience in **English and Hindi**, stores learning progress locally, and gives teachers a classroom analytics board — without requiring a backend, cloud database, or continuous internet connection.
 
