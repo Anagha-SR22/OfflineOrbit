@@ -1,4 +1,4 @@
-const CACHE_NAME = 'offlineorbit-v27';
+const CACHE_NAME = 'offlineorbit-v28';
 
 const APP_SHELL = [
   '/',
