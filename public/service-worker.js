@@ -11,9 +11,34 @@ const APP_SHELL = [
   '/lessons/l2.html',
   '/lessons/l3.html',
   '/lessons/s1.html',
-  '/lessons/s2.html'
-];
+  '/lessons/s2.html',
 
+  // Story images
+  '/story/whole-numbers-en.webp',
+  '/story/whole-numbers-hi.webp',
+  '/story/fractions-en.webp',
+  '/story/fractions-hi.webp',
+  '/story/geometry-en.webp',
+  '/story/geometry-hi.webp',
+  '/story/plants-en.webp',
+  '/story/plants-hi.webp',
+  '/story/matter-en.webp',
+  '/story/matter-hi.webp',
+
+  // Lesson images
+  '/images/whole-numbers.svg',
+  '/images/fractions.svg',
+  '/images/geometry.svg',
+  '/images/plants.svg',
+  '/images/matter.svg',
+
+  // Worksheets
+  '/worksheets/whole-numbers.jpg',
+  '/worksheets/fractions.jpg',
+  '/worksheets/geometry.png',
+  '/worksheets/plants-around-us.png',
+  '/worksheets/states-of-matter.png'
+];
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
