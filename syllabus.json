@@ -1,0 +1,67 @@
+{
+  "subject": {
+    "en": "Mathematics & Science",
+    "hi": "गणित और विज्ञान"
+  },
+  "grade": 4,
+  "units": [
+    {
+      "id": "unit-1",
+      "title": {
+        "en": "Numbers and Operations",
+        "hi": "संख्याएँ और संक्रियाएँ"
+      },
+      "lessons": [
+        {
+          "id": "l1",
+          "title": {
+            "en": "Whole Numbers",
+            "hi": "पूर्ण संख्याएँ"
+          },
+          "file": "lessons/l1.html"
+        },
+        {
+          "id": "l2",
+          "title": {
+            "en": "Fractions",
+            "hi": "भिन्न"
+          },
+          "file": "lessons/l2.html"
+        },
+        {
+          "id": "l3",
+          "title": {
+            "en": "Basic Geometry",
+            "hi": "आधारभूत ज्यामिति"
+          },
+          "file": "lessons/l3.html"
+        }
+      ]
+    },
+    {
+      "id": "science-unit-1",
+      "title": {
+        "en": "Science — Living World & Matter",
+        "hi": "विज्ञान — जीव-जगत और पदार्थ"
+      },
+      "lessons": [
+        {
+          "id": "s1",
+          "title": {
+            "en": "Plants Around Us",
+            "hi": "हमारे आसपास के पौधे"
+          },
+          "file": "lessons/s1.html"
+        },
+        {
+          "id": "s2",
+          "title": {
+            "en": "States of Matter",
+            "hi": "पदार्थ की अवस्थाएँ"
+          },
+          "file": "lessons/s2.html"
+        }
+      ]
+    }
+  ]
+}

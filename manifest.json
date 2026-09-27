@@ -1,0 +1,13 @@
+{
+  "name": "OfflineOrbit — Class 4 Maths",
+  "short_name": "OfflineOrbit",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f6f9fc",
+  "theme_color": "#2563eb",
+  "description": "A friendly offline-first learning space for Class 4 Mathematics with per-student progress tracking.",
+  "icons": [
+    { "src": "/branding/logo-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/branding/logo-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
