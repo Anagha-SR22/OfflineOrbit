@@ -1,37 +1,42 @@
-const CACHE_NAME = 'offlineorbit-v26-logo-live-board';
+const CACHE_NAME = 'offlineorbit-v27';
+
 const APP_SHELL = [
   '/',
   '/index.html',
   '/manifest.json',
   '/syllabus.json',
-  '/src/core/app-shell.js',
-  '/src/core/router.js',
-  '/src/core/syllabus-view.js',
-  '/src/core/connection-status.js',
-  '/src/shared/db.js',
-  '/src/shared/live-signal.js',
-  '/src/dashboard/dashboard.js',
-  '/src/lessons/lesson-runtime.js',
-  '/branding/favicon.ico',
-  '/branding/favicon-32.png',
-  '/branding/favicon-16.png',
-  '/branding/logo-32.png',
-  '/branding/logo-64.png',
-  '/branding/logo-192.png',
-  '/branding/logo-512.png',
+
+  // Lessons
   '/lessons/l1.html',
   '/lessons/l2.html',
   '/lessons/l3.html',
   '/lessons/s1.html',
   '/lessons/s2.html',
+
+  // Branding
+  '/branding/favicon.ico',
+  '/branding/favicon-16.png',
+  '/branding/favicon-32.png',
+  '/branding/logo-32.png',
+  '/branding/logo-64.png',
+  '/branding/logo-192.png',
+  '/branding/logo-512.png',
+
+  // Lesson images
   '/images/whole-numbers.svg',
   '/images/fractions.svg',
   '/images/geometry.svg',
+  '/images/plants.svg',
+  '/images/matter.svg',
+
+  // Worksheets
   '/worksheets/whole-numbers.jpg',
   '/worksheets/fractions.jpg',
   '/worksheets/geometry.png',
   '/worksheets/plants-around-us.png',
   '/worksheets/states-of-matter.png',
+
+  // Story images
   '/story/whole-numbers-en.webp',
   '/story/whole-numbers-hi.webp',
   '/story/fractions-en.webp',
@@ -47,7 +52,7 @@ const APP_SHELL = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => Promise.all(APP_SHELL.map((url) => cache.add(url).catch(() => null))))
+      .then((cache) => cache.addAll(APP_SHELL))
       .then(() => self.skipWaiting())
   );
 });
@@ -55,7 +60,13 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))))
+      .then((keys) =>
+        Promise.all(
+          keys
+            .filter((key) => key !== CACHE_NAME)
+            .map((key) => caches.delete(key))
+        )
+      )
       .then(() => self.clients.claim())
   );
 });
@@ -63,19 +74,42 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
+  const url = new URL(event.request.url);
+
+  // Only handle files belonging to OfflineOrbit.
+  if (url.origin !== self.location.origin) return;
+
   event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        if (response && response.ok) {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
-        }
-        return response;
+    caches.match(event.request)
+      .then((cachedResponse) => {
+        const networkRequest = fetch(event.request)
+          .then((response) => {
+            if (response && response.ok) {
+              const copy = response.clone();
+
+              caches.open(CACHE_NAME)
+                .then((cache) => {
+                  cache.put(event.request, copy);
+                })
+                .catch(() => {});
+            }
+
+            return response;
+          })
+          .catch(() => cachedResponse);
+
+        // Use cached version immediately when available.
+        return cachedResponse || networkRequest;
       })
-      .catch(() => caches.match(event.request).then((cached) => {
-        if (cached) return cached;
-        if (event.request.mode === 'navigate') return caches.match('/index.html');
-        return new Response('Offline', { status: 503, statusText: 'Offline' });
-      }))
+      .catch(() => {
+        if (event.request.mode === 'navigate') {
+          return caches.match('/index.html');
+        }
+
+        return new Response('Offline', {
+          status: 503,
+          statusText: 'Offline'
+        });
+      })
   );
 });
