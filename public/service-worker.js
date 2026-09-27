@@ -1,4 +1,4 @@
-const CACHE_NAME = 'offlineorbit-v28';
+const CACHE_NAME = 'offlineorbit-v29';
 
 const APP_SHELL = [
   '/',
@@ -13,6 +13,13 @@ const APP_SHELL = [
   '/lessons/s1.html',
   '/lessons/s2.html',
 
+  // Lesson card images
+  '/images/whole-numbers.svg',
+  '/images/fractions.svg',
+  '/images/geometry.svg',
+  '/images/plants.svg',
+  '/images/matter.svg',
+
   // Story images
   '/story/whole-numbers-en.webp',
   '/story/whole-numbers-hi.webp',
@@ -25,13 +32,6 @@ const APP_SHELL = [
   '/story/matter-en.webp',
   '/story/matter-hi.webp',
 
-  // Lesson images
-  '/images/whole-numbers.svg',
-  '/images/fractions.svg',
-  '/images/geometry.svg',
-  '/images/plants.svg',
-  '/images/matter.svg',
-
   // Worksheets
   '/worksheets/whole-numbers.jpg',
   '/worksheets/fractions.jpg',
@@ -39,6 +39,7 @@ const APP_SHELL = [
   '/worksheets/plants-around-us.png',
   '/worksheets/states-of-matter.png'
 ];
+
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -69,35 +70,39 @@ self.addEventListener('fetch', (event) => {
   if (url.origin !== self.location.origin) return;
 
   event.respondWith(
-    caches.match(event.request)
-      .then((cachedResponse) => {
-        const networkRequest = fetch(event.request)
-          .then((response) => {
-            if (response && response.ok) {
-              const copy = response.clone();
+    caches.match(event.request).then((cached) => {
+      // OFFLINE-FIRST:
+      // If we already have it, use it immediately.
+      if (cached) {
+        return cached;
+      }
 
-              caches.open(CACHE_NAME)
-                .then((cache) => {
-                  cache.put(event.request, copy);
-                })
-                .catch(() => {});
-            }
-
+      // Otherwise try the network and save the result.
+      return fetch(event.request)
+        .then((response) => {
+          if (!response || !response.ok) {
             return response;
-          })
-          .catch(() => cachedResponse);
+          }
 
-        return cachedResponse || networkRequest;
-      })
-      .catch(() => {
-        if (event.request.mode === 'navigate') {
-          return caches.match('/index.html');
-        }
+          const copy = response.clone();
 
-        return new Response('Offline', {
-          status: 503,
-          statusText: 'Offline'
+          caches.open(CACHE_NAME)
+            .then((cache) => cache.put(event.request, copy))
+            .catch(() => {});
+
+          return response;
+        })
+        .catch(() => {
+          // If navigation fails, show the cached app shell.
+          if (event.request.mode === 'navigate') {
+            return caches.match('/index.html');
+          }
+
+          return new Response('Offline', {
+            status: 503,
+            statusText: 'Offline'
+          });
         });
-      })
+    })
   );
 });
